@@ -1,6 +1,7 @@
 package com.example.dmitriylesovoy.ultrapulltorefreshtest;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 
@@ -34,12 +35,21 @@ public class Progress extends CircularProgressView implements PtrUIHandler {
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(50, 50);
         setLayoutParams(layoutParams);
         setIndeterminate(true);
+        setColor(ContextCompat.getColor(getContext(), android.R.color.holo_red_dark));
+        setVisibility(VISIBLE);
     }
 
     public void setUp(PtrFrameLayout ptrFrameLayout) {
         this.ptrFrameLayout = ptrFrameLayout;
         this.ptrTensionIndicator = new PtrTensionIndicator();
         ptrFrameLayout.setPtrIndicator(ptrTensionIndicator);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        int pl = getPaddingLeft();
+        int pt = getPaddingTop();
+        super.onLayout(changed, left + pl, top + pt, right, bottom);
     }
 
     @Override
@@ -54,23 +64,31 @@ public class Progress extends CircularProgressView implements PtrUIHandler {
 
     @Override
     public void onUIRefreshBegin(PtrFrameLayout frame) {
-//        offsetTopAndBottom(ptrTensionIndicator.getCurrentPosY());
-//        setRotation(ptrTensionIndicator.getOverDragPercent());
         startAnimation();
         setVisibility(VISIBLE);
+
+        float percent = ptrTensionIndicator.getOverDragPercent();
+        offsetTopAndBottom(ptrTensionIndicator.getCurrentPosY());
+        setRotation(percent);
+        invalidate();
     }
 
     @Override
     public void onUIRefreshComplete(PtrFrameLayout frame) {
-        setVisibility(GONE);
+//        setVisibility(GONE);
+
+        float percent = ptrTensionIndicator.getOverDragPercent();
         stopAnimation();
-//        offsetTopAndBottom(ptrTensionIndicator.getCurrentPosY());
-//        setRotation(ptrTensionIndicator.getOverDragPercent());
+        offsetTopAndBottom(ptrTensionIndicator.getCurrentPosY());
+        setRotation(percent);
+        invalidate();
     }
 
     @Override
     public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte status, PtrIndicator ptrIndicator) {
-//        offsetTopAndBottom(ptrTensionIndicator.getCurrentPosY());
-//        setRotation(ptrTensionIndicator.getOverDragPercent());
+        float percent = ptrTensionIndicator.getOverDragPercent();
+        offsetTopAndBottom(ptrTensionIndicator.getCurrentPosY());
+        setRotation(percent);
+        invalidate();
     }
 }

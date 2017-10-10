@@ -1,6 +1,7 @@
 package com.example.dmitriylesovoy.ultrapulltorefreshtest;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
+import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -49,17 +51,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initPullToRefresh() {
         ptrFrame.setLastUpdateTimeRelateObject(rvList);
         Progress progress = new Progress(this);
-        ptrFrame.setHeaderView(progress);
+        RentalsSunHeaderView headerView = new RentalsSunHeaderView(this);
+        ptrFrame.setHeaderView(headerView);
         ptrFrame.setPullToRefresh(true);
         ptrFrame.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-                mockList(3);
-                ptrFrame.refreshComplete();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        Timber.d("mockList");
+                        mockList(3);
+                        ptrFrame.refreshComplete();
+                    }
+                }, 2000);
             }
 
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                Timber.d("checkCanDoRefresh");
                 return PtrDefaultHandler.checkContentCanBePulledDown(frame, rvList, header);
             }
         });

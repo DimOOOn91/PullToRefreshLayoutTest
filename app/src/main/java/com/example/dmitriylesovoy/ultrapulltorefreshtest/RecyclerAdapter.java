@@ -26,8 +26,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.Recycl
     }
 
     public void setItems(List<String> items) {
-        this.items.clear();
-        this.items.addAll(items);
+        this.items = items;
         notifyDataSetChanged();
     }
 

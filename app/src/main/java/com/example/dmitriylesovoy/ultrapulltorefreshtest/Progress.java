@@ -1,9 +1,9 @@
 package com.example.dmitriylesovoy.ultrapulltorefreshtest;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 
@@ -12,31 +12,32 @@ import in.srain.cube.views.ptr.PtrUIHandler;
 import in.srain.cube.views.ptr.indicator.PtrIndicator;
 import in.srain.cube.views.ptr.indicator.PtrTensionIndicator;
 
-public class Progress extends CircularProgressView implements PtrUIHandler {
+public class Progress extends RelativeLayout implements PtrUIHandler {
+    private View rootView;
     private PtrFrameLayout ptrFrameLayout;
     private PtrTensionIndicator ptrTensionIndicator;
+    private CircularProgressView circularProgressView;
 
     public Progress(Context context) {
         super(context);
-        initialize();
+        initialize(context);
     }
 
     public Progress(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initialize();
+        initialize(context);
     }
 
     public Progress(Context context, AttributeSet attrs, int i) {
         super(context, attrs, i);
-        initialize();
+        initialize(context);
     }
 
-    private void initialize() {
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(50, 50);
-        setLayoutParams(layoutParams);
-        setIndeterminate(true);
-        setColor(ContextCompat.getColor(getContext(), android.R.color.holo_red_dark));
-        setVisibility(VISIBLE);
+
+
+    private void initialize(Context context) {
+        rootView = inflate(context, R.layout.progress_layout, this);
+        circularProgressView = (CircularProgressView) rootView.findViewById(R.id.progress);
     }
 
     public void setUp(PtrFrameLayout ptrFrameLayout) {
@@ -45,16 +46,17 @@ public class Progress extends CircularProgressView implements PtrUIHandler {
         ptrFrameLayout.setPtrIndicator(ptrTensionIndicator);
     }
 
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        int pl = getPaddingLeft();
-        int pt = getPaddingTop();
-        super.onLayout(changed, left + pl, top + pt, right, bottom);
-    }
+//    @Override
+//    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+//        int pl = getPaddingLeft();
+//        int pt = getPaddingTop();
+//        super.onLayout(changed, left + pl, top + pt, right, bottom);
+//    }
 
     @Override
     public void onUIReset(PtrFrameLayout frame) {
-        setRotation(0);
+        circularProgressView.setVisibility(VISIBLE);
+        circularProgressView.startAnimation();
     }
 
     @Override
@@ -64,12 +66,11 @@ public class Progress extends CircularProgressView implements PtrUIHandler {
 
     @Override
     public void onUIRefreshBegin(PtrFrameLayout frame) {
-        startAnimation();
-        setVisibility(VISIBLE);
+        circularProgressView.startAnimation();
+        circularProgressView.setVisibility(VISIBLE);
 
         float percent = ptrTensionIndicator.getOverDragPercent();
-        offsetTopAndBottom(ptrTensionIndicator.getCurrentPosY());
-        setRotation(percent);
+//        circularProgressView.offsetTopAndBottom(ptrTensionIndicator.getCurrentPosY());
         invalidate();
     }
 
@@ -78,17 +79,15 @@ public class Progress extends CircularProgressView implements PtrUIHandler {
 //        setVisibility(GONE);
 
         float percent = ptrTensionIndicator.getOverDragPercent();
-        stopAnimation();
-        offsetTopAndBottom(ptrTensionIndicator.getCurrentPosY());
-        setRotation(percent);
+//        circularProgressView.stopAnimation();
+//        circularProgressView.offsetTopAndBottom(ptrTensionIndicator.getCurrentPosY());
         invalidate();
     }
 
     @Override
     public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte status, PtrIndicator ptrIndicator) {
         float percent = ptrTensionIndicator.getOverDragPercent();
-        offsetTopAndBottom(ptrTensionIndicator.getCurrentPosY());
-        setRotation(percent);
+//        circularProgressView.offsetTopAndBottom(ptrTensionIndicator.getCurrentPosY());
         invalidate();
     }
 }

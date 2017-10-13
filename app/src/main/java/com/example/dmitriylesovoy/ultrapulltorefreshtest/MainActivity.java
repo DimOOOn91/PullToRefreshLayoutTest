@@ -52,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ptrFrame.setLastUpdateTimeRelateObject(rvList);
         Progress progress = new Progress(this);
         RentalsSunHeaderView headerView = new RentalsSunHeaderView(this);
-        ptrFrame.setHeaderView(headerView);
+        progress.setUp(ptrFrame);
+        ptrFrame.setHeaderView(progress);
         ptrFrame.setPullToRefresh(true);
         ptrFrame.setPtrHandler(new PtrHandler() {
             @Override
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        adapter.setItems(new ArrayList<String>());
+        titles = new ArrayList<>();
+        adapter.setItems(titles);
     }
 }
